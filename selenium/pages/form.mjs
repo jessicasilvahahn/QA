@@ -5,7 +5,7 @@ export class Form
 {
     #driver;
 
-    constructor(browserDriver,timeout=1000)
+    constructor(browserDriver,timeout=10000)
     {
         this.#driver = browserDriver;
         this.thimeout = timeout;
@@ -13,8 +13,10 @@ export class Form
 
     async enterInput(input,value)
     {
+        await this.#driver.wait(until.elementLocated(input), this.thimeout);
         let inputElement = await this.#driver.findElement(input);
         await inputElement.sendKeys(value);
+        
     }
 
     async send(submitBt)
