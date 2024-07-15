@@ -1,7 +1,7 @@
-//import {assert} from 'assert';
 import {Builder, Browser} from 'selenium-webdriver';
 import {Login} from '../pages/login.mjs';
-import { describe, it } from "mocha";
+import { describe, it} from "mocha";
+import { strict as assert } from 'assert';
 
 var URL = 'http://localhost:3000/';
 let driver;
@@ -26,7 +26,12 @@ describe("Login", async function () {
     });
 
     it("Login with user created", async function () {
-        await driver.sleep(3000);
-        await login.login(userInfo.get('userName'),userInfo.get('password'));
+        let result = await login.login(userInfo.get('userName'),userInfo.get('password'));
+        assert.equal(result,true,"Error to Log in");
+    });
+
+    after(async function () {
+      console.log("Closing driver");
+      await login.close();
     });
   });
