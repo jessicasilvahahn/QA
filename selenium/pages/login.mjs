@@ -1,5 +1,5 @@
 import { Signup } from './signup.mjs';
-import {By} from 'selenium-webdriver';
+import {By, until} from 'selenium-webdriver';
 
 export class Login extends Signup
 {
@@ -7,6 +7,8 @@ export class Login extends Signup
     #usernameId;
     #passwordId;
     #createAccountLink;
+    #userNameFromHome;
+    #driver;
 
     constructor(browserDriver)
     {
@@ -15,6 +17,8 @@ export class Login extends Signup
         this.#usernameId = By.xpath("//input[@id='username']");
         this.#passwordId = super.getPassword();
         this.#createAccountLink = By.linkText("Don't have an account? Sign Up");
+        this.#userNameFromHome = By.xpath("//h6[@data-test='sidenav-username']");
+        this.#driver = super.getDriver();
     }
 
     async #requestPageToCreateAccount()
@@ -27,6 +31,10 @@ export class Login extends Signup
         await super.enterInput(this.#usernameId,username);
         await super.enterInput(this.#passwordId,password);
         await super.send(this.#loginBt);
+        await this.#driver.wait(until.elementLocated(this.#userNameFromHome), this.thimeout);
+        let usernameHome = await this.#driver.findElement(this.#userNameFromHome);
+        let usernameHomeText = await usernameHome.getText();
+        return usernameHomeText.includes(username);
     }
 
     async createAccount(accountInfo)
