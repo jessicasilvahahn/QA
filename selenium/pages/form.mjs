@@ -8,12 +8,12 @@ export class Form
     constructor(browserDriver,timeout=10000)
     {
         this.#driver = browserDriver;
-        this.thimeout = timeout;
+        this.timeout = timeout;
     }
 
     async enterInput(input,value)
     {
-        await this.#driver.wait(until.elementLocated(input), this.thimeout);
+        await this.#driver.wait(until.elementLocated(input), this.timeout);
         let inputElement = await this.#driver.findElement(input);
         await inputElement.sendKeys(value);
         
@@ -21,6 +21,7 @@ export class Form
 
     async send(submitBt)
     {
+        await this.#driver.wait(until.elementLocated(submitBt), this.timeout);
         let button = await this.#driver.findElement(submitBt);
         await this.#driver.executeScript("arguments[0].click();", button);
     }
