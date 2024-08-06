@@ -31,7 +31,7 @@ export class Login extends Signup
         await super.enterInput(this.#usernameId,username);
         await super.enterInput(this.#passwordId,password);
         await super.send(this.#loginBt);
-        await this.#driver.wait(until.elementLocated(this.#userNameFromHome), this.thimeout);
+        await this.#driver.wait(until.elementLocated(this.#userNameFromHome), this.timeout);
         let usernameHome = await this.#driver.findElement(this.#userNameFromHome);
         let usernameHomeText = await usernameHome.getText();
         return usernameHomeText.includes(username);
