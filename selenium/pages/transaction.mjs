@@ -13,7 +13,7 @@ export class Transaction extends Form
         super(browserDriver);
         this.#driver = browserDriver;
         this.#inputSelectContact = By.id("user-list-search-input");
-        this.timeout = 2000;
+        this.timeout = 1000;
     }
 
     async selectContact(user)
@@ -46,6 +46,7 @@ export class Transaction extends Form
 
     async payAmount(user,amount,description)
     {
+        this.selectContact(user);
         let payButton = By.xpath("//button[@data-test='transaction-create-submit-payment']");
         let createAnotherTransactionButton = By.xpath("//button[@data-test='new-transaction-create-another-transaction']");
         await this.#pay(user,amount,description);

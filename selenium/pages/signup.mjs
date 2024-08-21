@@ -8,7 +8,7 @@ export class Signup extends Form
     #userName;
     #password;
     #confirmPassword;
-    #sigUpBt;
+    #signUpButton;
 
     constructor(browserDriver)
     {
@@ -18,22 +18,7 @@ export class Signup extends Form
         this.#userName = By.id('username');
         this.#password = By.id('password');
         this.#confirmPassword = By.id('confirmPassword');
-        this.#sigUpBt = By.tagName('button');
-    }
-
-    getUserName()
-    {
-        return this.#userName;
-    }
-
-    getPassword()
-    {
-        return this.#password;
-    }
-
-    getSignUpBt()
-    {
-        return this.#sigUpBt;
+        this.#signUpButton = By.tagName('button');
     }
 
     async createAccount(accountInfo)
@@ -48,6 +33,6 @@ export class Signup extends Form
         await super.enterInput(this.#userName,userName);
         await super.enterInput(this.#password,password);
         await super.enterInput(this.#confirmPassword,confirmPassword);
-        await super.send(this.#sigUpBt);
+        await super.send(this.#signUpButton);
     }
 }

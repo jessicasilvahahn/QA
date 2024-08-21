@@ -1,4 +1,4 @@
-import {By} from 'selenium-webdriver';
+import {By, until } from 'selenium-webdriver';
 import { BankAccounts }  from './bankAccounts.mjs';
 import { MyAccount } from './myAccount.mjs';
 import { Form } from './form.mjs';
@@ -8,40 +8,45 @@ export class Home extends Form
 {
     #buttonNextFirstAccess;
     #buttonDone;
-    #myAccount;
-    #myBankAccount;
     #myAccountSettings;
     #bankAccountSettings;
     #logoutButton;
     #newTransactionButton;
-    #transactionPage;
+    #transactionTab;
+    #driver;
+    #userLogin;
 
-    constructor(browserDriver)
+    constructor(browserDriver,userLogin)
     {
         super(browserDriver);
+        this.#userLogin = userLogin;
+        this.#driver = browserDriver;
         this.#bankAccountSettings = By.xpath("//a[@data-test='sidenav-bankaccounts']");
         this.#myAccountSettings = By.xpath("//a[@data-test='sidenav-user-settings']");
-        this.#myBankAccount = new BankAccounts(browserDriver,this.#bankAccountSettings);
-        this.#myAccount = new MyAccount(browserDriver,this.#myAccountSettings);
-        this.#transactionPage = new Transaction(browserDriver);
         this.#buttonNextFirstAccess = By.xpath("//button[@data-test='user-onboarding-next']");
         this.#buttonDone = By.xpath("//button[@data-test='user-onboarding-next']");
         this.#logoutButton = By.xpath("//div[@data-test='sidenav-signout']");
+        this.#transactionTab = By.xpath("//div[@data-test='nav-transaction-tabs']");
         this.#newTransactionButton = By.xpath("//a[@data-test='nav-top-new-transaction']");
     }
 
     async createFirstBankAccount(bankInfo)
     {
         await super.send(this.#buttonNextFirstAccess);
-        await this.#myBankAccount.createBankAccount(bankInfo,true);
+        await this.#driver.wait(until.elementLocated(this.#transactionTab), this.timeout);
+        let myBankAccount = new BankAccounts(this.#driver,this.#bankAccountSettings);
+        await myBankAccount.createBankAccount(bankInfo,true);
         await super.send(this.#buttonDone);
+        return myBankAccount;
     }
 
-    async changeMyAccountFirstTime(email,phone)
+    async setMyAccount(email,phone)
     {
+        let myAccount = new MyAccount(this.#driver,this.#myAccountSettings);
         await super.send(this.#myAccountSettings);
-        await this.#myAccount.changeEmail("",email);
-        await this.#myAccount.changePhone("",phone);
+        await myAccount.changeEmail("",email);
+        await myAccount.changePhone("",phone);
+        return myAccount;
     }
 
     async logout()
@@ -49,25 +54,15 @@ export class Home extends Form
         await super.send(this.#logoutButton);
     }
 
-    async newTransaction(user)
+    getUserLogin()
+    {
+        return this.#userLogin;
+    }
+
+    async newTransaction()
     {
         await super.send(this.#newTransactionButton);
-        await this.#transactionPage.selectContact(user);
-    }
-
-    getBankAccount()
-    {
-        return this.#myBankAccount;
-    }
-
-    getMyAccount()
-    {
-        return this.#myAccount;
-    }
-
-    getTransaction()
-    {
-        return this.#transactionPage;
+        return new Transaction(this.#driver);
     }
     
 }

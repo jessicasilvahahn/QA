@@ -11,7 +11,7 @@ export class BankAccounts extends Form
     #myBankAccount;
     #createAccountButton;
     #bankAccountList;
-
+    
     constructor(browserDriver,myBankAccount)
     {
         super(browserDriver);
